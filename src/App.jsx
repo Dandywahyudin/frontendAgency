@@ -1,27 +1,32 @@
-import React from 'react';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import About from './components/About';
-import Services from './components/Services';
-import Portfolio from './components/Portofolio';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import './App.css';
+// src/App.jsx
+import Navbar from "./components/shared/Navbar";
+import Footer from "./components/shared/Footer";
+import HomePage from "./pages/HomePage";
+import { THEME } from "@/config/theme";
+import { FONT_FAMILY } from "@/config/theme";
+import ScrollProgressBar from "./components/shared/ScrollProgressBar";
+import Hero from "@/components/sections/Hero";
+import Services from "@/components/sections/Services";
+import About from "@/components/sections/About";
+import Portfolio from "@/components/sections/Portfolio";
+import Pricing from "@/components/sections/Pricing";
+import Contact from "@/components/sections/Contact";
 
 function App() {
   return (
-    <div className="App">
-      <Header />
+    <div className="bg-dark" style={{ fontFamily: FONT_FAMILY }}>
+      <ScrollProgressBar />
+      <Navbar />
       <main>
         <Hero />
-        <About />
         <Services />
+        <About />
         <Portfolio />
+        <Pricing />
         <Contact />
       </main>
       <Footer />
     </div>
   );
 }
-
 export default App;
