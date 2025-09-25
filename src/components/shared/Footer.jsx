@@ -2,7 +2,7 @@ import { Twitter, Linkedin, Github } from 'lucide-react';
 import { THEME } from '@/config/theme';
 
 const Footer = () => (
-  <footer className={`bg-[${THEME.colors.light}] text-black`}>
+  <footer className="bg-light text-black">
     <div className="container mx-auto px-6 md:px-20 py-12">
       <div className="flex flex-col md:flex-row justify-between items-center">
         <p className="font-semibold tracking-tighter text-lg">Digiency. &copy; {new Date().getFullYear()}</p>
@@ -15,4 +15,5 @@ const Footer = () => (
     </div>
   </footer>
 );
+
 export default Footer;

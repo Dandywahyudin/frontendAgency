@@ -1,47 +1,88 @@
 // src/components/shared/Navbar.jsx
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
-import MobileNav from './MobileNav';
-import { AnimatePresence } from 'framer-motion';
-import { THEME } from '../../config/theme';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate(); // ✅ gunakan react-router-dom
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  const handleSmoothScroll = (e, id) => {
+  
+  // pindah ke halaman lain (misalnya home, register, dll.)
+  const handleNavigation = (e, path) => {
     e.preventDefault();
-    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+    navigate(path); // ✅ langsung pakai navigate
     setIsMenuOpen(false);
   };
-  const navLinks = ["Home", "Services", "About", "Portfolio", "Pricing", "Contact"];
+
+  // scroll ke section dalam halaman home
+  const handleSmoothScroll = (e, id) => {
+    e.preventDefault();
+    navigate('/'); // pastikan dulu pindah ke home
+    setTimeout(() => {
+      document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+    setIsMenuOpen(false);
+  };
+
+  const navLinks = ["Services", "About", "Portfolio", "Pricing", "Contact"];
+  const textShadowStyle = "[text-shadow:0_1px_3px_rgba(0,0,0,0.4)]";
+
   return (
     <>
       <motion.nav
         initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.5 }}
-        className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${isScrolled ? `bg-[${THEME.colors.light}]/80 backdrop-blur-lg shadow-sm` : 'bg-transparent'}`}
+        className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${
+          isScrolled ? `bg-dark/80 backdrop-blur-lg shadow-sm` : 'bg-transparent'
+        }`}
       >
         <div className="container mx-auto px-6 md:px-20 py-5 flex justify-between items-center">
-          <a href="#home" onClick={(e) => handleSmoothScroll(e, '#home')} className={`text-3xl font-bold tracking-tighter transition-colors ${isScrolled ? `text-[${THEME.colors.dark}]` : 'text-white'}`}>Digiency.</a>
+          <a 
+            href="/" 
+            onClick={(e) => handleNavigation(e, '/')}
+            className={`text-3xl font-bold tracking-tighter transition-colors text-black ${
+              !isScrolled ? textShadowStyle : ''
+            }`}
+          >
+            Digiency.
+          </a>
+
           <div className="hidden md:flex space-x-10 items-center">
             {navLinks.map((link) => (
-              <a key={link} href={`#${link.toLowerCase()}`} onClick={(e) => handleSmoothScroll(e, `#${link.toLowerCase()}`)} className={`font-medium hover:text-[${THEME.colors.primary}] transition-colors ${isScrolled ? 'text-black' : 'text-white'}`}>
+              <a
+                key={link}
+                href={`#${link.toLowerCase()}`}
+                onClick={(e) => handleSmoothScroll(e, `#${link.toLowerCase()}`)}
+                className={`font-medium hover:text-primary transition-colors text-black ${
+                  !isScrolled ? textShadowStyle : ''
+                }`}
+              >
                 {link}
               </a>
             ))}
-            <Button>Get Started</Button>
+            {/* ✅ langsung ke halaman /register */}
+            <Button onClick={(e) => handleNavigation(e, '/register')}>Get Started</Button>
           </div>
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className={`md:hidden z-50 ${isMenuOpen ? 'text-black' : (isScrolled ? 'text-black' : 'text-white')}`}>
+
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className={`md:hidden z-50 transition-colors ${
+              isMenuOpen ? 'text-black' : `text-black ${!isScrolled ? textShadowStyle : ''}`
+            }`}
+          >
             {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </motion.nav>
+
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -50,11 +91,19 @@ const Navbar = () => {
           >
             <div className="flex flex-col items-center justify-center h-full space-y-10">
               {navLinks.map((link) => (
-                <a key={link} href={`#${link.toLowerCase()}`} onClick={(e) => handleSmoothScroll(e, `#${link.toLowerCase()}`)} className="text-4xl font-bold text-black tracking-tighter">
+                <a
+                  key={link}
+                  href={`#${link.toLowerCase()}`}
+                  onClick={(e) => handleSmoothScroll(e, `#${link.toLowerCase()}`)}
+                  className="text-4xl font-bold text-black tracking-tighter"
+                >
                   {link}
                 </a>
               ))}
-              <Button size="lg">Get Started</Button>
+              {/* ✅ mobile menu juga pakai navigate */}
+              <Button size="lg" onClick={(e) => handleNavigation(e, '/register')}>
+                Get Started
+              </Button>
             </div>
           </motion.div>
         )}
@@ -62,6 +111,5 @@ const Navbar = () => {
     </>
   );
 };
-
 
 export default Navbar;

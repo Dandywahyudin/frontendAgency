@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { THEME } from "@/config/theme";
 import { Button } from "@/components/ui/button";
+import myVideo from "../../assets/gift.mp4";
 
 const Hero = () => {
     const headline = "We Build Creative Digital Solutions";
@@ -52,16 +53,37 @@ const Hero = () => {
                     </motion.div>
                 </div>
                 <div className="relative h-full w-full hidden md:flex justify-center items-center">
-                    <motion.div
-                        className="w-[500px] h-[700px] bg-cover bg-center grayscale"
-                        style={{
-                            backgroundImage: 'url(https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)',
-                            clipPath: 'polygon(0% 0%, 100% 0%, 100% 75%, 0% 100%)',
-                        }}
-                        initial={{ clipPath: 'polygon(0% 50%, 100% 50%, 100% 50%, 0% 50%)' }}
-                        animate={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 75%, 0% 100%)' }}
-                        transition={{ duration: 1.5, ease: [0.6, 0.01, 0.05, 0.95], delay: 1 }}
-                    />
+                     <motion.div
+        className="relative w-[500px] h-[700px] overflow-hidden"
+        style={{
+          clipPath: "polygon(0% 0%, 100% 0%, 100% 75%, 0% 100%)",
+        }}
+        initial={{ clipPath: "polygon(0% 50%, 100% 50%, 100% 50%, 0% 50%)" }}
+        animate={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 75%, 0% 100%)" }}
+        transition={{
+          duration: 1.5,
+          ease: [0.6, 0.01, 0.05, 0.95],
+          delay: 1,
+        }}
+      >
+        {/* Video background */}
+        <video
+          className="absolute top-0 left-0 w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src={myVideo} type="video/mp4" />
+        </video>
+
+        {/* Konten di atas video */}
+        {/* <div className="relative z-10 flex h-full w-full items-center justify-center bg-opacity-20">
+          <h1 className="text-white text-3xl font-bold" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)' }}>
+            Welcome to My Agency
+          </h1>
+        </div> */}
+      </motion.div>
                 </div>
             </div>
         </section>

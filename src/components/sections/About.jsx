@@ -13,17 +13,17 @@ const About = () => (
                 </div>
             </div>
             <div className="relative h-96 w-full">
-                 <motion.div 
-                    className="absolute w-full h-full bg-cover bg-center"
-                    style={{ 
+                 <div className="relative h-96 w-full">
+                    <motion.div 
+                        className="absolute w-full h-full bg-cover bg-center"
+                        style={{
                         backgroundImage: 'url(https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)',
-                        clipPath: 'polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%)'
-                    }}
-                    initial={{ clipPath: 'polygon(25% 50%, 75% 50%, 75% 50%, 25% 50%)' }}
-                    whileInView={{ clipPath: 'polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%)' }}
-                    transition={{ duration: 1, ease: 'easeInOut' }}
-                    viewport={{ once: true, amount: 0.5 }}
-                />
+                        }}
+                        initial={{ clipPath: 'polygon(25% 50%, 75% 50%, 75% 50%, 25% 50%)' }}
+                        animate={{ clipPath: 'polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%)' }}
+                        transition={{ duration: 1, ease: 'easeInOut' }}
+                    />
+                    </div>
             </div>
         </div>
     </AnimatedSection>
