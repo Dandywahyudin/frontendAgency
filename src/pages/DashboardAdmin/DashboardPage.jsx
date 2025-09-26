@@ -1,12 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet, Navigate } from "react-router-dom";
 import Sidebar from "@/components/shared/Sidebar";
+import { jwtDecode } from "jwt-decode";
 
 const DashboardPage = () => {
   const token = localStorage.getItem("token");
   if (!token) return <Navigate to="/login" replace />;
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUser(decoded);
+      } catch (err) {
+        console.error("Token invalid:", err);
+        setUser(null);
+      }
+    }
+  }, [token]);
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -16,7 +30,9 @@ const DashboardPage = () => {
         <header className="flex items-center justify-between p-4 border-b bg-white">
           <div className="text-lg font-semibold">Dashboard</div>
           <div className="flex items-center gap-4">
-            <div className="text-sm text-neutral-600">Admin</div>
+            <div className="text-sm text-black-600 font-bold">
+              {user ? user.name || user.email : "User"}
+            </div>
           </div>
         </header>
 

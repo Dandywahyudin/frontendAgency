@@ -1,8 +1,10 @@
 // src/services/api.js
 import axios from "axios";
 
+export const backendUrl = "http://localhost:3000"; // export base URL backend
+
 const API = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: `${backendUrl}/api`, // semua request ke /api otomatis
 });
 
 // interceptor → kalau ada token, otomatis dikirim
@@ -14,25 +16,28 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+
+
 // ==== AUTH API ====
 
-// fungsi login
 export const loginUser = (data) => {
   return API.post("/login", data);
 };
 
-// fungsi register
 export const registerUser = (data) => {
   return API.post("/register", data);
 };
 
-// ambil profil user setelah login
+export const logoutUser = () => {
+  localStorage.removeItem("token");
+};
+
 export const getProfile = () => {
   return API.get("/profile");
 };
 
 export const addPackage = (data) => {
-  return API.post("/packages/create", data); // Konsisten dengan fungsi lain
+  return API.post("/packages/create", data);
 };
 
 export const getPackages = () => {
@@ -40,7 +45,7 @@ export const getPackages = () => {
 };
 
 export const updatePackage = (id, data) => {
-    return API.put(`/packages/${id}`, data);
+    return API.put(`/packages/update/${id}`, data);
 };
 
 export const deletePackage = (id) => {

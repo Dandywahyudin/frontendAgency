@@ -24,10 +24,10 @@ const LoginPage = ({ navigateTo }) => {
       console.log("Login Success:", res);
 
       // simpan token ke localStorage
-      localStorage.setItem("token", res.token);
+      localStorage.setItem("token", res.data.token);
 
       // redirect ke homepage
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       console.error(err);
       setError(err.message || "Login gagal");

@@ -1,15 +1,78 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
-const PackageFormModal = ({ isOpen, onClose, onSubmit }) => {
-  const [form, setForm] = useState({ name: "", description: "", price: "" });
+const PackageFormModal = ({ isOpen, onClose, onSubmit, initialData }) => {
+  const [form, setForm] = useState({ name: "", description: "", price: "", features: "" });
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(null);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-  const handleSubmit = () => {
-    onSubmit(form);
-    setForm({ name: "", description: "", price: "" });
+  // isi form otomatis kalau ada initialData (edit mode)
+  useEffect(() => {
+  if (initialData) {
+    let features = initialData.features || [];
+    if (typeof features === "string") {
+      try {
+        features = JSON.parse(features);
+      } catch {
+        features = [];
+      }
+    }
+
+    setForm({
+      name: initialData.name || "",
+      description: initialData.description || "",
+      price: initialData.price || "",
+      features: features.join(", "),
+    });
+
+    setPreview(initialData.image || null);
+    setImage(null);
+  } else {
+    setForm({ name: "", description: "", price: "", features: "" });
+    setImage(null);
+    setPreview(null);
+  }
+}, [initialData]);
+
+
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+    } else {
+      setPreview(null);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, value]) => {
+      if (key === "features") {
+        // ubah features menjadi array JSON
+        const featuresArray = value.split(",").map(f => f.trim()).filter(f => f);
+        formData.append(key, JSON.stringify(featuresArray));
+      } else {
+        formData.append(key, value);
+      }
+    });
+
+    if (image) {
+      formData.append("image", image);
+    }
+
+    if (initialData) {
+      onSubmit(initialData.id, formData); // EDIT → id dulu, baru formData
+    } else {
+      onSubmit(formData); // CREATE → cukup formData
+    }
   };
 
   return (
@@ -27,6 +90,7 @@ const PackageFormModal = ({ isOpen, onClose, onSubmit }) => {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -50, opacity: 0 }}
           >
+            {/* Tombol close */}
             <button
               className="absolute top-3 right-3 p-1 rounded hover:bg-gray-200"
               onClick={onClose}
@@ -34,8 +98,11 @@ const PackageFormModal = ({ isOpen, onClose, onSubmit }) => {
               <X className="w-5 h-5" />
             </button>
 
-            <h2 className="text-xl font-bold mb-4">Tambah Package</h2>
-            <div className="space-y-3">
+            <h2 className="text-xl font-bold mb-4">
+              {initialData ? "Edit Package" : "Tambah Package"}
+            </h2>
+
+            <form onSubmit={handleSubmit} className="space-y-3">
               <input
                 type="text"
                 name="name"
@@ -60,12 +127,40 @@ const PackageFormModal = ({ isOpen, onClose, onSubmit }) => {
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
               />
-            </div>
+              <input
+                type="text"
+                name="features"
+                placeholder="Features (pisahkan dengan koma)"
+                value={form.features}
+                onChange={handleChange}
+                className="w-full p-2 border rounded"
+              />
+              <input
+                type="file"
+                name="image"
+                accept="image/*"
+                className="w-full p-2 border rounded"
+                onChange={handleFileChange}
+              />
 
-            <div className="mt-4 flex justify-end gap-2">
-              <Button variant="outline" onClick={onClose}>Batal</Button>
-              <Button onClick={handleSubmit}>Simpan</Button>
-            </div>
+              {/* Preview image */}
+              {preview && (
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="w-full h-40 object-cover rounded mt-2"
+                />
+              )}
+
+              <div className="mt-4 flex justify-end gap-2">
+                <Button type="button" variant="outline" onClick={onClose}>
+                  Batal
+                </Button>
+                <Button type="submit">
+                  {initialData ? "Update" : "Simpan"}
+                </Button>
+              </div>
+            </form>
           </motion.div>
         </motion.div>
       )}
