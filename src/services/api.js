@@ -52,5 +52,17 @@ export const deletePackage = (id) => {
     return API.delete(`/packages/${id}`);
 }
 
+export const getPackageById = (id) => {
+    return API.get(`/packages/${id}`); 
+};
+
+export const submitPaymentProof = (formData) => {
+  return API.post('/payment/submit', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
 
 export default API;

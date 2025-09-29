@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getPackages, backendUrl } from "@/services/api";
+import  { useNavigate } from "react-router-dom";
 
 const Pricing = () => {
   const [packages, setPackages] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadPackages = async () => {
@@ -21,6 +23,10 @@ const Pricing = () => {
     };
     loadPackages();
   }, []);
+
+  const handleChoosePlan = (packageId) => {
+    navigate(`/payment/${packageId}`);
+  }
 
   return (
     <AnimatedSection id="pricing" className={`bg-[${THEME.colors.dark}] text-[${THEME.colors.light}]`}>
@@ -72,7 +78,11 @@ const Pricing = () => {
                   ))}
               </ul>
 
-              <Button variant={pkg.popular ? "default" : "outline"} className="w-full mt-auto">
+              <Button 
+                variant={pkg.popular ? "default" : "outline"} 
+                className="w-full mt-auto"
+                onClick={() => handleChoosePlan(pkg.id)}
+              >
                 Choose Plan
               </Button>
             </motion.div>

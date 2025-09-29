@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom/client';
 import React from 'react';
 import RegisterPage from './pages/RegisterPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
+import PaymentPage from './pages/PaymentPage';
 import DashboardPage from './pages/DashboardAdmin/DashboardPage.jsx';
 // import DashboardLayout from './pages/DashboardAdmin/DashboardLayout.jsx';
 import DashboardPackages from './pages/DashboardAdmin/DashboardPackages.jsx';
@@ -17,6 +18,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Routes>
         {/* App berisi semua section (Home, Services, Portfolio, dll) */}
         <Route path="/" element={<App />} />
+        <Route path="/payment/:packageId" element={<PaymentPage />} />
 
         {/* Halaman Register */}
         <Route path="/register" element={<RegisterPage />} />
