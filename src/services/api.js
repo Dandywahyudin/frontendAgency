@@ -45,7 +45,7 @@ export const getPackages = () => {
 };
 
 export const updatePackage = (id, data) => {
-    return API.put(`/packages/update/${id}`, data);
+    return API.post(`/packages/update/${id}`, data);
 };
 
 export const deletePackage = (id) => {

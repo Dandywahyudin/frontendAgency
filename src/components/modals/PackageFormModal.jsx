@@ -56,9 +56,11 @@ const PackageFormModal = ({ isOpen, onClose, onSubmit, initialData }) => {
     const formData = new FormData();
     Object.entries(form).forEach(([key, value]) => {
       if (key === "features") {
-        // ubah features menjadi array JSON
+        // Alternatif: Kirim sebagai array jika backend mendukungnya
         const featuresArray = value.split(",").map(f => f.trim()).filter(f => f);
-        formData.append(key, JSON.stringify(featuresArray));
+        featuresArray.forEach(feature => {
+          formData.append('features[]', feature);
+        });
       } else {
         formData.append(key, value);
       }
