@@ -5,6 +5,7 @@ import {
   BarChart3,
   Package,
   Settings,
+  ClipboardCheck,
   LogOut,
   Menu,
 } from "lucide-react";
@@ -17,6 +18,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     { to: "/dashboard/packages", label: "Packages", Icon: Package },
     { to: "/dashboard/analytics", label: "Analytics", Icon: BarChart3 },
     { to: "/dashboard/settings", label: "Settings", Icon: Settings },
+    { to: "/dashboard/tasks", label: "Task", Icon: ClipboardCheck}
+
   ];
 
   const handleLogout = () => {

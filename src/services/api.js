@@ -64,5 +64,22 @@ export const submitPaymentProof = (formData) => {
   });
 };
 
+export const checkOrderStatus = (packageId) => {
+  return API.get(`/orders/status?packageId=${packageId}`);
+};
+
+
+
+export const getAllTasks = () => API.get('/tasks');
+
+export const updateTaskStatus = (taskId, status) => {
+  return API.patch(`/tasks/status/${taskId}`, { status });
+};
+
+export const createTask = (taskData) => {
+  // tidak perlu menambahkan token manual, interceptor API sudah handle
+  return API.post("/tasks", taskData);
+};
+
 
 export default API;

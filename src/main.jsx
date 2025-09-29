@@ -7,6 +7,9 @@ import React from 'react';
 import RegisterPage from './pages/RegisterPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import PaymentPage from './pages/PaymentPage';
+//import DashboardPayments from './pages/DashboardAdmin/DashboardPayments.jsx';
+import DashboardTask from './pages/DashboardAdmin/DashboardTask.jsx'; // <-- Impor
+
 import DashboardPage from './pages/DashboardAdmin/DashboardPage.jsx';
 // import DashboardLayout from './pages/DashboardAdmin/DashboardLayout.jsx';
 import DashboardPackages from './pages/DashboardAdmin/DashboardPackages.jsx';
@@ -26,6 +29,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/dashboard" element={<DashboardPage />}>
           <Route index element={<div className="p-6">Selamat datang di dashboard</div>} />         {/* /dashboard */}
           <Route path="packages" element={<DashboardPackages />} /> {/* /dashboard/packages */}
+          <Route path="tasks" element={<DashboardTask />} /> 
         </Route>
       </Routes>
     </BrowserRouter>

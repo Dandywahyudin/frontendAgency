@@ -2,14 +2,16 @@ import { motion } from "framer-motion";
 import { AnimatedSection } from "../shared/AnimatedSection";
 import { THEME } from "@/config/theme";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+// 1. Impor 'Loader2' dari lucide-react
+import { Check, Loader2 } from "lucide-react"; 
 import { useEffect, useState } from "react";
-import { getPackages, backendUrl } from "@/services/api";
-import  { useNavigate } from "react-router-dom";
+import { getPackages, backendUrl, checkOrderStatus } from "@/services/api";
+import { useNavigate } from "react-router-dom";
 
 const Pricing = () => {
   const [packages, setPackages] = useState([]);
   const navigate = useNavigate();
+  const [checkingStatusId, setCheckingStatusId] = useState(null); 
 
   useEffect(() => {
     const loadPackages = async () => {
@@ -24,8 +26,32 @@ const Pricing = () => {
     loadPackages();
   }, []);
 
-  const handleChoosePlan = (packageId) => {
-    navigate(`/payment/${packageId}`);
+  // 2. Ganti nama parameter menjadi 'pkg' agar lebih jelas
+  const handleChoosePlan = async (pkg) => { 
+    setCheckingStatusId(pkg.id); // Gunakan pkg.id untuk loading status
+    
+    try {
+      // 3. Kirim pkg.id ke fungsi checkOrderStatus
+      const res = await checkOrderStatus(pkg.id); 
+      
+      if (res.data.hasActiveOrder) {
+        // 4. Gunakan 'pkg.name' dari parameter untuk pesan alert
+        alert(`Anda sudah memiliki pesanan untuk paket "${pkg.name}" dengan status: ${res.data.status}. Silakan selesaikan pembayaran atau tunggu verifikasi.`);
+      } else {
+        // 5. Navigasi menggunakan pkg.id
+        navigate(`/payment/${pkg.id}`); 
+      }
+    } catch (err) {
+      if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+        alert("Anda harus login terlebih dahulu untuk memilih paket.");
+        navigate('/login');
+      } else {
+        console.error("Gagal memeriksa status order:", err);
+        alert("Terjadi kesalahan. Silakan coba lagi.");
+      }
+    } finally {
+      setCheckingStatusId(null);
+    }
   }
 
   return (
@@ -47,6 +73,7 @@ const Pricing = () => {
               transition={{ duration: 0.5, delay: index * 0.2 }}
               viewport={{ once: true, amount: 0.5 }}
             >
+              {/* ... sisa kode JSX Anda sudah benar ... */}
               {pkg.popular && (
                 <div
                   className={`absolute -top-4 left-1/2 -translate-x-1/2 bg-[${THEME.colors.primary}] text-black px-4 py-1 text-sm font-bold tracking-wider`}
@@ -55,7 +82,6 @@ const Pricing = () => {
                 </div>
               )}
 
-              {/* Gambar package */}
               {pkg.image && (
                 <img
                   src={`${backendUrl}${pkg.image}`}
@@ -81,9 +107,14 @@ const Pricing = () => {
               <Button 
                 variant={pkg.popular ? "default" : "outline"} 
                 className="w-full mt-auto"
-                onClick={() => handleChoosePlan(pkg.id)}
+                onClick={() => handleChoosePlan(pkg)}
+                disabled={checkingStatusId === pkg.id}
               >
-                Choose Plan
+                {checkingStatusId === pkg.id ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  'Choose Plan'
+                )}
               </Button>
             </motion.div>
           ))}
