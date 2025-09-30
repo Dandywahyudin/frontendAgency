@@ -68,18 +68,27 @@ export const checkOrderStatus = (packageId) => {
   return API.get(`/orders/status?packageId=${packageId}`);
 };
 
-
-
 export const getAllTasks = () => API.get('/tasks');
 
 export const updateTaskStatus = (taskId, status) => {
   return API.patch(`/tasks/status/${taskId}`, { status });
 };
 
+export const updateTask = (id, taskData) => {
+  return API.put(`/tasks/${id}`, taskData);
+};
+
 export const createTask = (taskData) => {
-  // tidak perlu menambahkan token manual, interceptor API sudah handle
   return API.post("/tasks", taskData);
 };
 
+export const getOrders = () => {
+  return API.get('/orders');
+};
+
+export const getMyTasks = () => {
+  return  API.get('/tasks/my-tasks');
+};
+  
 
 export default API;

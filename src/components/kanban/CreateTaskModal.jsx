@@ -3,35 +3,33 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const CreateTaskModal = ({ isOpen, onClose, onSubmit, columns }) => {
-  const [formData, setFormData] = useState({
+// Terima 'orders' sebagai prop baru, beri nilai default array kosong
+const CreateTaskModal = ({ isOpen, onClose, onSubmit, columns, orders = [] }) => {
+  // Tambahkan 'orderId' ke state form awal
+  const initialState = {
     title: '',
     description: '',
-    status: 'TODO', // Default status
+    status: 'TODO',
     dueDate: '',
-    priority: 'MEDIUM'
-  });
+    priority: 'MEDIUM',
+    orderId: '', // State untuk menyimpan ID order yang dipilih
+  };
+  const [formData, setFormData] = useState(initialState);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.title.trim()) {
-      alert('Title is required');
+    if (!formData.title.trim() || !formData.orderId) { // Validasi orderId
+      alert('Title and Related Order are required');
       return;
     }
 
     setLoading(true);
     try {
       await onSubmit(formData);
-      // Reset form setelah submit berhasil
-      setFormData({
-        title: '',
-        description: '',
-        status: 'TODO',
-        dueDate: '',
-        priority: 'MEDIUM'
-      });
+      // Reset form ke kondisi awal setelah submit berhasil
+      setFormData(initialState);
     } catch (error) {
       console.error('Error creating task:', error);
     } finally {
@@ -67,6 +65,32 @@ const CreateTaskModal = ({ isOpen, onClose, onSubmit, columns }) => {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Dropdown untuk memilih Order */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Related Order *
+            </label>
+            <select
+              name="orderId"
+              value={formData.orderId}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+            >
+              <option value="" disabled>-- Select an order --</option>
+              {/* Perbaikan: Tampilkan pesan jika tidak ada order */}
+              {orders.length > 0 ? (
+                orders.map((order) => (
+                  <option key={order.id} value={order.id}>
+                    {order.user?.name || 'Unknown User'} - ({order.package?.name || 'Unknown Package'})
+                  </option>
+                ))
+              ) : (
+                <option value="" disabled>No orders found</option>
+              )}
+            </select>
+          </div>
+          
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -174,3 +198,4 @@ const CreateTaskModal = ({ isOpen, onClose, onSubmit, columns }) => {
 };
 
 export default CreateTaskModal;
+

@@ -1,26 +1,24 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard,
-  Package,
   ClipboardCheck,
   LogOut,
   Menu,
+  User, // Menambahkan ikon User untuk profil
 } from "lucide-react";
 
-const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
+const UserSidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
 
+  // Menu yang sudah disesuaikan untuk pengguna biasa
   const menu = [
-    { to: "/dashboard", label: "Overview", Icon: LayoutDashboard, end: true }, // pakai end
-    { to: "/dashboard/packages", label: "Packages", Icon: Package },
-    { to: "/dashboard/tasks", label: "Task", Icon: ClipboardCheck}
-
+    { to: "/user", label: "My Profile", Icon: User, end: true },
+    { to: "/user/tasks", label: "My Tasks", Icon: ClipboardCheck },
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // hapus token
-    navigate("/login"); // redirect pakai navigate (lebih baik daripada window.location.href)
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   return (
@@ -47,7 +45,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
         </button>
       </div>
 
-      {/* Navigation */}
+      {/* Navigasi */}
       <nav className="p-2 space-y-1 flex-1">
         {menu.map(({ to, label, Icon, end }) => (
           <NavLink
@@ -82,4 +80,4 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   );
 };
 
-export default Sidebar;
+export default UserSidebar;

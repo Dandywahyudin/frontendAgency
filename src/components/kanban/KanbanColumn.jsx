@@ -1,47 +1,60 @@
-// components/kanban/KanbanColumn.jsx
-import React from 'react';
-import { useDroppable } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import TaskCard from './TaskCard';
+import React from "react";
+import { useDroppable } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import TaskCard from "./TaskCard";
+import { Inbox } from "lucide-react";
 
-const KanbanColumn = ({ id, title, tasks }) => {
+const KanbanColumn = ({ id, tasks, onEditTask, onUpdateTask }) => {
   const { setNodeRef, isOver } = useDroppable({
     id,
     data: {
-      type: 'column', // PASTIKAN INI ADA
+      type: "column",
+      columnId: id,
     },
   });
 
+  // Handle case when onEditTask is not provided
+  const handleEdit = (task) => {
+    if (onEditTask && typeof onEditTask === 'function') {
+      onEditTask(task);
+    } else {
+      console.warn('onEditTask is not available');
+    }
+  };
+
   return (
-    <div 
-      className={`bg-gray-50 dark:bg-gray-800 rounded-lg p-4 min-h-[500px] border-2 ${
-        isOver ? 'border-blue-500 bg-blue-50' : 'border-transparent'
-      } transition-colors`}
+    <div
+      ref={setNodeRef}
+      className={`
+        flex flex-col h-full transition-all duration-200
+        ${isOver ? "ring-2 ring-black/70 bg-gray-50 scale-[1.01]" : ""}
+      `}
     >
-      <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">
-        {title} <span className="text-sm text-gray-500">({tasks.length})</span>
-      </h2>
-      
-      <div
-        ref={setNodeRef}
-        className="space-y-3 min-h-[400px]"
+      <SortableContext
+        items={tasks.map((t) => t.id)}
+        strategy={verticalListSortingStrategy}
       >
-        <SortableContext 
-          items={tasks.map(task => task.id)} 
-          strategy={verticalListSortingStrategy}
-        >
-          {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} />
-          ))}
-        </SortableContext>
-        
-        {/* Area kosong untuk drop */}
-        {tasks.length === 0 && (
-          <div className="flex items-center justify-center h-32 text-gray-400 border-2 border-dashed border-gray-300 rounded-lg">
-            Drop tasks here
-          </div>
-        )}
-      </div>
+        <div className="flex-1 space-y-3 overflow-y-auto min-h-[100px] custom-scrollbar">
+          {tasks.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8 text-gray-500 border border-dashed border-gray-300 rounded-lg bg-gray-50">
+              <Inbox size={32} className="mb-2 text-gray-400" />
+              <p className="text-sm font-medium">No tasks yet</p>
+              <p className="text-xs mt-1 text-gray-400">Drag tasks here</p>
+            </div>
+          ) : (
+            tasks.map((task) => (
+              <TaskCard 
+                key={task.id} 
+                task={task} 
+                onEdit={handleEdit} // <- gunakan handleEdit yang sudah di-safe
+              />
+            ))
+          )}
+        </div>
+      </SortableContext>
     </div>
   );
 };
